@@ -88,3 +88,24 @@ func Create(ctx context.Context, title string) (string, error) {
 
 	return pr.GetLinks().GetHTML().GetHRef(), nil
 }
+
+func Branch(ctx context.Context, id int64) (string, error) {
+	if err := initClient(ctx); err != nil {
+		return "", errors.Trace(err)
+	}
+
+	org, err := query.CurrentOrg()
+	if err != nil {
+		return "", errors.Trace(err)
+	}
+	repo, err := query.CurrentRepo()
+	if err != nil {
+		return "", errors.Trace(err)
+	}
+	pr, _, err := client.PullRequests.Get(ctx, org, repo, int(id))
+	if err != nil {
+		return "", errors.Trace(err)
+	}
+
+	return pr.GetHead().GetRef(), nil
+}

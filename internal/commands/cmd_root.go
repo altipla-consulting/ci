@@ -11,6 +11,7 @@ func init() {
 	CmdRoot.PersistentFlags().BoolVarP(&debugApp, "debug", "d", false, "Activa el logging de depuración")
 
 	CmdRoot.AddCommand(CmdCheckout)
+	CmdRoot.AddCommand(CmdCheckoutShort)
 	CmdRoot.AddCommand(CmdLogin)
 	CmdRoot.AddCommand(CmdPush)
 	CmdRoot.AddCommand(CmdUpdate)

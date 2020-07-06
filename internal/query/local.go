@@ -1,6 +1,7 @@
 package query
 
 import (
+	"os/exec"
 	"strings"
 
 	"libs.altipla.consulting/errors"
@@ -62,4 +63,17 @@ func LastCommitMessage() (string, error) {
 		return "", errors.Trace(err)
 	}
 	return msg, nil
+}
+
+func BranchExists(name string) (bool, error) {
+	if err := run.Git("show-ref", "--verify", "--quiet", "refs/heads/"+name); err != nil {
+		var exit *exec.ExitError
+		if errors.As(err, &exit) {
+			if exit.ProcessState.ExitCode() == 1 {
+				return false, nil
+			}
+		}
+		return false, errors.Trace(err)
+	}
+	return true, nil
 }
