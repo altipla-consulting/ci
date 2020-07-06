@@ -4,9 +4,9 @@ import (
   "github.com/spf13/cobra"
 )
 
-var CmdPush = &cobra.Command{
-  Use:          "push",
-  Short:        "Push the commit to production.",
+var CmdUpdate = &cobra.Command{
+  Use:          "update",
+  Short:        "Update to the latest master version erasing everything",
   RunE: func(cmd *cobra.Command, args []string) error {
     return nil
   },

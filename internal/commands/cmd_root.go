@@ -10,7 +10,9 @@ var debugApp bool
 func init() {
   CmdRoot.PersistentFlags().BoolVarP(&debugApp, "debug", "d", false, "Activa el logging de depuración")
 
+  CmdRoot.AddCommand(CmdCheckout)
   CmdRoot.AddCommand(CmdPush)
+  CmdRoot.AddCommand(CmdUpdate)
 }
 
 var CmdRoot = &cobra.Command{

@@ -4,9 +4,9 @@ import (
   "github.com/spf13/cobra"
 )
 
-var CmdPush = &cobra.Command{
-  Use:          "push",
-  Short:        "Push the commit to production.",
+var CmdCheckout = &cobra.Command{
+  Use:          "checkout",
+  Short:        "Checkout the code to a remote GitHub pull request",
   RunE: func(cmd *cobra.Command, args []string) error {
     return nil
   },
