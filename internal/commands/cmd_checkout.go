@@ -6,7 +6,7 @@ import (
 
 var CmdCheckout = &cobra.Command{
   Use:          "checkout",
-  Short:        "Checkout the code to a remote GitHub pull request",
+  Short:        "Establece el código a la versión exacta de un Pull Request en GitHub",
   RunE: func(cmd *cobra.Command, args []string) error {
     return nil
   },
