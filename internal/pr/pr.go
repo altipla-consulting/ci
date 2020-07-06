@@ -55,3 +55,36 @@ func ListBranches(ctx context.Context) ([]string, error) {
 	}
 	return names, nil
 }
+
+func Create(ctx context.Context, title string) (string, error) {
+	if err := initClient(ctx); err != nil {
+		return "", errors.Trace(err)
+	}
+
+	org, err := query.CurrentOrg()
+	if err != nil {
+		return "", errors.Trace(err)
+	}
+	repo, err := query.CurrentRepo()
+	if err != nil {
+		return "", errors.Trace(err)
+	}
+
+	branch, err := query.CurrentBranch()
+	if err != nil {
+		return "", errors.Trace(err)
+	}
+
+	req := &github.NewPullRequest{
+		Title: github.String(title),
+		Head:  github.String(branch),
+		Base:  github.String("master"),
+		Body:  github.String(""),
+	}
+	pr, _, err := client.PullRequests.Create(ctx, org, repo, req)
+	if err != nil {
+		return "", errors.Trace(err)
+	}
+
+	return pr.GetLinks().GetHTML().GetHRef(), nil
+}

@@ -30,7 +30,7 @@ func extractGitHub() error {
 
 	parts := strings.Split(remote, "/")
 	org = parts[0][len("git@github.com:"):]
-	repo = parts[1][:len(parts[1])-len(".git\n")]
+	repo = parts[1][:len(parts[1])-len(".git")]
 	return nil
 }
 
@@ -54,4 +54,12 @@ func CurrentBranch() (string, error) {
 		return "", errors.Trace(err)
 	}
 	return branch, nil
+}
+
+func LastCommitMessage() (string, error) {
+	msg, err := run.GitCaptureOutput("log", "-1", "--pretty=%B")
+	if err != nil {
+		return "", errors.Trace(err)
+	}
+	return msg, nil
 }

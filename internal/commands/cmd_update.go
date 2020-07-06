@@ -36,11 +36,19 @@ var CmdUpdate = &cobra.Command{
 		if err := run.Git("reset", "--hard", "origin/master"); err != nil {
 			return errors.Trace(err)
 		}
-		if err := run.Git("stash", "-q", "--include-untracked"); err != nil {
+
+		// Remove any untracked file remaining in the working directory
+		status, err = run.GitCaptureOutput("status", "-s")
+		if err != nil {
 			return errors.Trace(err)
 		}
-		if err := run.Git("stash", "drop", "-q"); err != nil {
-			return errors.Trace(err)
+		if len(status) > 0 {
+			if err := run.Git("stash", "-q", "--include-untracked"); err != nil {
+				return errors.Trace(err)
+			}
+			if err := run.Git("stash", "drop", "-q"); err != nil {
+				return errors.Trace(err)
+			}
 		}
 
 		return nil

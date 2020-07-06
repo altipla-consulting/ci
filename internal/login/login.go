@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"os/exec"
 	"time"
 
 	"github.com/google/go-github/v32/github"
@@ -15,6 +14,7 @@ import (
 	"libs.altipla.consulting/errors"
 
 	"github.com/altipla-consulting/ci/internal/prompt"
+	"github.com/altipla-consulting/ci/internal/run"
 )
 
 func Start(ctx context.Context) error {
@@ -87,7 +87,7 @@ func Start(ctx context.Context) error {
 	url := conf.AuthCodeURL(state, oauth2.AccessTypeOffline)
 	log.Info("Abriendo navegador para iniciar sesión...")
 	log.Info(url)
-	if err := exec.Command("xdg-open", url).Start(); err != nil {
+	if err := run.OpenBrowser(url); err != nil {
 		return errors.Trace(err)
 	}
 
