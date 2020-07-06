@@ -14,11 +14,6 @@ var CmdLogin = &cobra.Command{
 	Short: "Inicia sesión global en GitHub para todas las operaciones relacionadas con ese tipo de repos",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := context.Background()
-
-		if err := login.Start(ctx); err != nil {
-			return errors.Trace(err)
-		}
-
-		return nil
+		return errors.Trace(login.Start(ctx))
 	},
 }
