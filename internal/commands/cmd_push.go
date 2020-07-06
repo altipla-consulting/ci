@@ -58,6 +58,9 @@ var CmdPush = &cobra.Command{
 			if err != nil {
 				return errors.Trace(err)
 			}
+			if auth == nil {
+				return errors.Errorf("Inicia sesión con `ci login` antes de interactuar con GitHub")
+			}
 			t := time.Now().In(datetime.EuropeMadrid()).Format("0405")
 			branch = fmt.Sprintf("f/%s-%s", auth.Username, t)
 			if err := run.Git("checkout", "-b", branch); err != nil {
