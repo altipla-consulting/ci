@@ -12,6 +12,7 @@ func init() {
 
 	CmdRoot.AddCommand(CmdCheckout)
 	CmdRoot.AddCommand(CmdDraft)
+	CmdRoot.AddCommand(CmdLogin)
 	CmdRoot.AddCommand(CmdPush)
 	CmdRoot.AddCommand(CmdUpdate)
 }

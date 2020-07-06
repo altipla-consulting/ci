@@ -1,10 +1,10 @@
 package commands
 
 import (
-	"github.com/AlecAivazis/survey/v2"
 	"github.com/spf13/cobra"
 	"libs.altipla.consulting/errors"
 
+	"github.com/altipla-consulting/ci/internal/prompt"
 	"github.com/altipla-consulting/ci/internal/run"
 )
 
@@ -21,11 +21,8 @@ var CmdUpdate = &cobra.Command{
 			return errors.Trace(err)
 		}
 		if len(status) > 0 {
-			var keep bool
-			prompt := &survey.Confirm{
-				Message: "El proyecto tiene cambios. ¿Estás seguro de que deseas borrar todo y pasar a master?",
-			}
-			if err := survey.AskOne(prompt, &keep); err != nil {
+			keep, err := prompt.Confirm("El proyecto tiene cambios. ¿Estás seguro de que deseas borrar todo y pasar a master?")
+			if err != nil {
 				return errors.Trace(err)
 			}
 			if !keep {

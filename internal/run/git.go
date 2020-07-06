@@ -28,5 +28,5 @@ func GitCaptureOutput(args ...string) (string, error) {
 		return "", errors.Trace(err)
 	}
 
-	return string(output), nil
+	return strings.TrimSpace(string(output)), nil
 }
