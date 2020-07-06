@@ -22,6 +22,9 @@ func initClient(ctx context.Context) error {
 	if err != nil {
 		return errors.Trace(err)
 	}
+	if auth == nil {
+		return errors.Errorf("Inicia sesión con `ci login` antes de interactuar con GitHub")
+	}
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: auth.AccessToken})
 	client = github.NewClient(oauth2.NewClient(ctx, ts))
 

@@ -18,9 +18,10 @@ func init() {
 }
 
 var CmdRoot = &cobra.Command{
-	Use:          "ci",
-	Short:        "Git related helper.",
-	SilenceUsage: true,
+	Use:           "ci",
+	Short:         "Git related helper.",
+	SilenceUsage:  true,
+	SilenceErrors: true,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		if debugApp {
 			log.SetLevel(log.DebugLevel)
