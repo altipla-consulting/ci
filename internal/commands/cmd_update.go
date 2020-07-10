@@ -30,6 +30,9 @@ var CmdUpdate = &cobra.Command{
 			}
 		}
 
+		if err := run.Git("checkout", "--", "."); err != nil {
+			return errors.Trace(err)
+		}
 		if err := run.Git("checkout", "master"); err != nil {
 			return errors.Trace(err)
 		}
