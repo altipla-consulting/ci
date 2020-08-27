@@ -19,6 +19,18 @@ func IsGerrit() (bool, error) {
 	return strings.Contains(remote, "gerrit.altiplaconsulting.net"), nil
 }
 
+func MainBranch() (string, error) {
+	branch, err := run.GitCaptureOutput("branch", "-a")
+	if err != nil {
+		return "", errors.Trace(err)
+	}
+	mainBranch := "master"
+	if strings.Contains(branch, "remotes/origin/main") {
+		mainBranch = "main"
+	}
+	return mainBranch, nil
+}
+
 func extractGitHub() error {
 	if org != "" {
 		return nil

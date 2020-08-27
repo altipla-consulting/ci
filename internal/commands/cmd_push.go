@@ -36,11 +36,15 @@ var CmdPush = &cobra.Command{
 			return nil
 		}
 
+		mainBranch, err := query.MainBranch()
+		if err != nil {
+			return errors.Trace(err)
+		}
 		branch, err := query.CurrentBranch()
 		if err != nil {
 			return errors.Trace(err)
 		}
-		if branch != "master" {
+		if branch != mainBranch {
 			branches, err := pr.ListBranches(ctx)
 			if err != nil {
 				return errors.Trace(err)

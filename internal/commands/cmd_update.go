@@ -1,10 +1,13 @@
 package commands
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 	"libs.altipla.consulting/errors"
 
 	"github.com/altipla-consulting/ci/internal/prompt"
+	"github.com/altipla-consulting/ci/internal/query"
 	"github.com/altipla-consulting/ci/internal/run"
 )
 
@@ -16,12 +19,17 @@ var CmdUpdate = &cobra.Command{
 			return errors.Trace(err)
 		}
 
+		mainBranch, err := query.MainBranch()
+		if err != nil {
+			return errors.Trace(err)
+		}
+
 		status, err := run.GitCaptureOutput("status", "-s")
 		if err != nil {
 			return errors.Trace(err)
 		}
 		if len(status) > 0 {
-			keep, err := prompt.Confirm("El proyecto tiene cambios. ¿Estás seguro de que deseas borrar todo y pasar a master?")
+			keep, err := prompt.Confirm(fmt.Sprintf("El proyecto tiene cambios. ¿Estás seguro de que deseas borrar todo y pasar a %s?", mainBranch))
 			if err != nil {
 				return errors.Trace(err)
 			}
@@ -33,10 +41,10 @@ var CmdUpdate = &cobra.Command{
 		if err := run.Git("checkout", "--", "."); err != nil {
 			return errors.Trace(err)
 		}
-		if err := run.Git("checkout", "master"); err != nil {
+		if err := run.Git("checkout", mainBranch); err != nil {
 			return errors.Trace(err)
 		}
-		if err := run.Git("reset", "--hard", "origin/master"); err != nil {
+		if err := run.Git("reset", "--hard", "origin/"+mainBranch); err != nil {
 			return errors.Trace(err)
 		}
 
