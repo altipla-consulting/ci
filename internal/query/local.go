@@ -16,7 +16,7 @@ func IsGerrit() (bool, error) {
 	if err != nil {
 		return false, errors.Trace(err)
 	}
-	return strings.Contains(remote, "gerrit.altiplaconsulting.net"), nil
+	return strings.Contains(remote, "gerrit.altipla.consulting"), nil
 }
 
 func MainBranch() (string, error) {
