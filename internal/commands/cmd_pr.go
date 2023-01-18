@@ -3,6 +3,7 @@ package commands
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -13,7 +14,6 @@ import (
 
 	"github.com/altipla-consulting/ci/internal/login"
 	"github.com/altipla-consulting/ci/internal/pr"
-	"github.com/altipla-consulting/ci/internal/prompt"
 	"github.com/altipla-consulting/ci/internal/query"
 	"github.com/altipla-consulting/ci/internal/run"
 )
@@ -77,13 +77,13 @@ var cmdPR = &cobra.Command{
 		if err != nil {
 			return errors.Trace(err)
 		}
+		parts := strings.SplitN(last, "\n\n", 2)
 
-		fmt.Println()
-		title, err := prompt.TextDefault("Título del PR", last)
-		if err != nil {
-			return errors.Trace(err)
+		var body string
+		if len(parts) > 1 {
+			body = parts[1]
 		}
-		link, err := pr.Create(ctx, title)
+		link, err := pr.Create(ctx, parts[0], body)
 		if err != nil {
 			return errors.Trace(err)
 		}

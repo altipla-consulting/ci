@@ -56,7 +56,7 @@ func ListBranches(ctx context.Context) ([]string, error) {
 	return names, nil
 }
 
-func Create(ctx context.Context, title string) (string, error) {
+func Create(ctx context.Context, title, body string) (string, error) {
 	if err := initClient(ctx); err != nil {
 		return "", errors.Trace(err)
 	}
@@ -82,7 +82,7 @@ func Create(ctx context.Context, title string) (string, error) {
 		Title: github.String(title),
 		Head:  github.String(branch),
 		Base:  github.String(base),
-		Body:  github.String(""),
+		Body:  github.String(body),
 	}
 	pr, _, err := client.PullRequests.Create(ctx, org, repo, req)
 	if err != nil {
