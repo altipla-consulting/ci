@@ -1,7 +1,9 @@
 package query
 
 import (
+	"net/url"
 	"os/exec"
+	"regexp"
 	"strings"
 
 	"libs.altipla.consulting/errors"
@@ -31,6 +33,8 @@ func MainBranch() (string, error) {
 	return mainBranch, nil
 }
 
+var scpSyntaxRe = regexp.MustCompile(`^([a-zA-Z0-9_]+)@([a-zA-Z0-9._-]+):(.*)$`)
+
 func extractGitHub() error {
 	if org != "" {
 		return nil
@@ -40,10 +44,27 @@ func extractGitHub() error {
 	if err != nil {
 		return errors.Trace(err)
 	}
+	var remoteURL *url.URL
+	if m := scpSyntaxRe.FindStringSubmatch(remote); m != nil {
+		// Match SCP-like syntax and convert it to a URL.
+		// Eg, "git@github.com:user/repo" becomes
+		// "ssh://git@github.com/user/repo".
+		remoteURL = &url.URL{
+			Scheme: "ssh",
+			User:   url.User(m[1]),
+			Host:   m[2],
+			Path:   m[3],
+		}
+	} else {
+		remoteURL, err = url.Parse(remote)
+		if err != nil {
+			return errors.Trace(err)
+		}
+	}
 
-	parts := strings.Split(remote, "/")
-	org = parts[0][len("git@github.com:"):]
-	repo = parts[1][:len(parts[1])-len(".git")]
+	parts := strings.SplitN(strings.TrimSuffix(remoteURL.Path, ".git"), "/", 2)
+	org = parts[0]
+	repo = parts[1]
 	return nil
 }
 
