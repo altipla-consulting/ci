@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/altipla-consulting/errors"
 	"github.com/google/go-github/v43/github"
 	"github.com/segmentio/ksuid"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 	oauth2github "golang.org/x/oauth2/github"
-	"libs.altipla.consulting/errors"
 
 	"github.com/altipla-consulting/ci/internal/prompt"
 	"github.com/altipla-consulting/ci/internal/run"

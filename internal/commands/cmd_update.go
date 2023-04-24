@@ -3,8 +3,8 @@ package commands
 import (
 	"fmt"
 
+	"github.com/altipla-consulting/errors"
 	"github.com/spf13/cobra"
-	"libs.altipla.consulting/errors"
 
 	"github.com/altipla-consulting/ci/internal/prompt"
 	"github.com/altipla-consulting/ci/internal/query"

@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
+	"github.com/altipla-consulting/errors"
 	log "github.com/sirupsen/logrus"
-	"libs.altipla.consulting/errors"
 
 	"github.com/altipla-consulting/ci/internal/commands"
 )

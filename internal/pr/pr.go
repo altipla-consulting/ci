@@ -3,9 +3,9 @@ package pr
 import (
 	"context"
 
+	"github.com/altipla-consulting/errors"
 	"github.com/google/go-github/v43/github"
 	"golang.org/x/oauth2"
-	"libs.altipla.consulting/errors"
 
 	"github.com/altipla-consulting/ci/internal/login"
 	"github.com/altipla-consulting/ci/internal/query"

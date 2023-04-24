@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"libs.altipla.consulting/errors"
+	"github.com/altipla-consulting/errors"
 )
 
 type AuthConfig struct {

@@ -6,17 +6,26 @@ import (
 	"strings"
 	"time"
 
+	"github.com/altipla-consulting/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"libs.altipla.consulting/collections"
-	"libs.altipla.consulting/datetime"
-	"libs.altipla.consulting/errors"
+	"golang.org/x/exp/slices"
 
 	"github.com/altipla-consulting/ci/internal/login"
 	"github.com/altipla-consulting/ci/internal/pr"
 	"github.com/altipla-consulting/ci/internal/query"
 	"github.com/altipla-consulting/ci/internal/run"
 )
+
+var europeMadrid *time.Location
+
+func init() {
+	var err error
+	europeMadrid, err = time.LoadLocation("Europe/Madrid")
+	if err != nil {
+		panic(fmt.Sprintf("cannot load location Europe/Madrid: %v", err))
+	}
+}
 
 var cmdPR = &cobra.Command{
 	Use:     "pr",
@@ -46,7 +55,7 @@ var cmdPR = &cobra.Command{
 			if err != nil {
 				return errors.Trace(err)
 			}
-			if collections.HasString(branches, branch) {
+			if slices.Contains(branches, branch) {
 				// La rama tiene un PR abierto, enviamos el nuevo commit que automáticamente
 				// sale en la interfaz de PRs.
 				if err := run.Git("push"); err != nil {
@@ -62,7 +71,7 @@ var cmdPR = &cobra.Command{
 			if auth == nil {
 				return errors.Errorf("Inicia sesión con `ci login` antes de interactuar con GitHub")
 			}
-			t := time.Now().In(datetime.EuropeMadrid()).Format("0405")
+			t := time.Now().In(europeMadrid).Format("0405")
 			branch = fmt.Sprintf("f/%s-%s", auth.Username, t)
 			if err := run.Git("checkout", "-b", branch); err != nil {
 				return errors.Trace(err)

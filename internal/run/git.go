@@ -5,8 +5,8 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/altipla-consulting/errors"
 	log "github.com/sirupsen/logrus"
-	"libs.altipla.consulting/errors"
 )
 
 func Git(args ...string) error {

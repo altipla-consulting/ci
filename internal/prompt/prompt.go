@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
-	"libs.altipla.consulting/errors"
+	"github.com/altipla-consulting/errors"
 )
 
 func Confirm(msg string) (bool, error) {

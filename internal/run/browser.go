@@ -4,7 +4,7 @@ import (
 	"os"
 	"os/exec"
 
-	"libs.altipla.consulting/errors"
+	"github.com/altipla-consulting/errors"
 )
 
 var ErrCannotOpenBrowser = errors.New("run: cannot open browser")
