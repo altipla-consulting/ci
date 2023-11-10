@@ -13,22 +13,22 @@ var cmdPush = &cobra.Command{
 	Short:   "Envía el commit a Gerrit/GitHub.",
 	Example: "ci push",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		gerrit, err := query.IsGerrit()
+		gerrit, err := query.IsGerrit(cmd.Context())
 		if err != nil {
 			return errors.Trace(err)
 		}
-		mainBranch, err := query.MainBranch()
+		mainBranch, err := query.MainBranch(cmd.Context())
 		if err != nil {
 			return errors.Trace(err)
 		}
 
 		if gerrit {
-			if err := run.GitContext(cmd.Context(), "push", "origin", "HEAD:refs/for/"+mainBranch); err != nil {
+			if err := run.Git(cmd.Context(), "push", "origin", "HEAD:refs/for/"+mainBranch); err != nil {
 				return errors.Trace(err)
 			}
 			return nil
 		}
 
-		return errors.Trace(run.GitContext(cmd.Context(), "push"))
+		return errors.Trace(run.Git(cmd.Context(), "push"))
 	},
 }

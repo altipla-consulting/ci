@@ -87,7 +87,7 @@ func Start(ctx context.Context) error {
 	url := conf.AuthCodeURL(state, oauth2.AccessTypeOffline)
 	log.Info("Abriendo navegador para iniciar sesión...")
 	log.Info(url)
-	if err := run.OpenBrowser(url); err != nil {
+	if err := run.OpenBrowser(ctx, url); err != nil {
 		return errors.Trace(err)
 	}
 

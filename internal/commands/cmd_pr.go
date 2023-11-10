@@ -31,7 +31,7 @@ var cmdPR = &cobra.Command{
 	Short:   "Create a new branch and send a PR to the main branch.",
 	Example: "ci pr",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		gerrit, err := query.IsGerrit()
+		gerrit, err := query.IsGerrit(cmd.Context())
 		if err != nil {
 			return errors.Trace(err)
 		}
@@ -39,11 +39,11 @@ var cmdPR = &cobra.Command{
 			return errors.Errorf("Gerrit does not use PRs")
 		}
 
-		mainBranch, err := query.MainBranch()
+		mainBranch, err := query.MainBranch(cmd.Context())
 		if err != nil {
 			return errors.Trace(err)
 		}
-		branch, err := query.CurrentBranch()
+		branch, err := query.CurrentBranch(cmd.Context())
 		if err != nil {
 			return errors.Trace(err)
 		}
@@ -55,7 +55,7 @@ var cmdPR = &cobra.Command{
 			if slices.Contains(branches, branch) {
 				// La rama tiene un PR abierto, enviamos el nuevo commit que automáticamente
 				// sale en la interfaz de PRs.
-				if err := run.Git("push"); err != nil {
+				if err := run.Git(cmd.Context(), "push"); err != nil {
 					return errors.Trace(err)
 				}
 				return nil
@@ -66,20 +66,20 @@ var cmdPR = &cobra.Command{
 				return errors.Trace(err)
 			}
 			if auth == nil {
-				return errors.Errorf("Inicia sesión con `ci login` antes de interactuar con GitHub")
+				return errors.Errorf("Inicia sesión con `ci login` antes de interactuar con GitContextHcmd.Context(), ub")
 			}
 			t := time.Now().In(europeMadrid).Format("0405")
 			branch = fmt.Sprintf("f/%s-%s", auth.Username, t)
-			if err := run.Git("checkout", "-b", branch); err != nil {
+			if err := run.Git(cmd.Context(), "checkout", "-b", branch); err != nil {
 				return errors.Trace(err)
 			}
 		}
 
-		if err := run.Git("push", "-u", "origin", branch); err != nil {
+		if err := run.Git(cmd.Context(), "push", "-u", "origin", branch); err != nil {
 			return errors.Trace(err)
 		}
 
-		last, err := query.LastCommitMessage()
+		last, err := query.LastCommitMessage(cmd.Context())
 		if err != nil {
 			return errors.Trace(err)
 		}
@@ -99,7 +99,7 @@ var cmdPR = &cobra.Command{
 		log.Info("\t" + link)
 		log.Info()
 
-		if err := run.OpenBrowser(link); err != nil && !errors.Is(err, run.ErrCannotOpenBrowser) {
+		if err := run.OpenBrowser(cmd.Context(), link); err != nil && !errors.Is(err, run.ErrCannotOpenBrowser) {
 			return errors.Trace(err)
 		}
 

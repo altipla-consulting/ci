@@ -28,20 +28,20 @@ var cmdCheckout = &cobra.Command{
 			return errors.Trace(err)
 		}
 
-		exists, err := query.BranchExists(branch)
+		exists, err := query.BranchExists(cmd.Context(), branch)
 		if err != nil {
 			return errors.Trace(err)
 		}
 		if exists {
-			if err := run.GitContext(cmd.Context(), "branch", "-D", branch); err != nil {
+			if err := run.Git(cmd.Context(), "branch", "-D", branch); err != nil {
 				return errors.Trace(err)
 			}
 		}
-		if err := run.GitContext(cmd.Context(), "fetch", "origin", fmt.Sprintf("pull/%d/head:%s", id, branch)); err != nil {
+		if err := run.Git(cmd.Context(), "fetch", "origin", fmt.Sprintf("pull/%d/head:%s", id, branch)); err != nil {
 			return errors.Trace(err)
 		}
 
-		if err := run.GitContext(cmd.Context(), "checkout", branch); err != nil {
+		if err := run.Git(cmd.Context(), "checkout", branch); err != nil {
 			return errors.Trace(err)
 		}
 

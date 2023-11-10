@@ -15,16 +15,16 @@ import (
 
 var org, repo string
 
-func IsGerrit() (bool, error) {
-	remote, err := run.GitCaptureOutput("remote", "get-url", "origin")
+func IsGerrit(ctx context.Context) (bool, error) {
+	remote, err := run.GitCaptureOutput(ctx, "remote", "get-url", "origin")
 	if err != nil {
 		return false, errors.Trace(err)
 	}
 	return strings.Contains(remote, "gerrit.altipla.consulting"), nil
 }
 
-func MainBranch() (string, error) {
-	branch, err := run.GitCaptureOutput("branch", "-a")
+func MainBranch(ctx context.Context) (string, error) {
+	branch, err := run.GitCaptureOutput(ctx, "branch", "-a")
 	if err != nil {
 		return "", errors.Trace(err)
 	}
@@ -37,12 +37,12 @@ func MainBranch() (string, error) {
 
 var scpSyntaxRe = regexp.MustCompile(`^([a-zA-Z0-9_]+)@([a-zA-Z0-9._-]+):(.*)$`)
 
-func extractGitHub() error {
+func extractGitHub(ctx context.Context) error {
 	if org != "" {
 		return nil
 	}
 
-	remote, err := run.GitCaptureOutput("remote", "get-url", "origin")
+	remote, err := run.GitCaptureOutput(ctx, "remote", "get-url", "origin")
 	if err != nil {
 		return errors.Trace(err)
 	}
@@ -70,38 +70,38 @@ func extractGitHub() error {
 	return nil
 }
 
-func CurrentOrg() (string, error) {
-	if err := extractGitHub(); err != nil {
+func CurrentOrg(ctx context.Context) (string, error) {
+	if err := extractGitHub(ctx); err != nil {
 		return "", errors.Trace(err)
 	}
 	return org, nil
 }
 
-func CurrentRepo() (string, error) {
-	if err := extractGitHub(); err != nil {
+func CurrentRepo(ctx context.Context) (string, error) {
+	if err := extractGitHub(ctx); err != nil {
 		return "", errors.Trace(err)
 	}
 	return repo, nil
 }
 
-func CurrentBranch() (string, error) {
-	branch, err := run.GitCaptureOutput("rev-parse", "--abbrev-ref", "HEAD")
+func CurrentBranch(ctx context.Context) (string, error) {
+	branch, err := run.GitCaptureOutput(ctx, "rev-parse", "--abbrev-ref", "HEAD")
 	if err != nil {
 		return "", errors.Trace(err)
 	}
 	return branch, nil
 }
 
-func LastCommitMessage() (string, error) {
-	msg, err := run.GitCaptureOutput("log", "-1", "--pretty=%B")
+func LastCommitMessage(ctx context.Context) (string, error) {
+	msg, err := run.GitCaptureOutput(ctx, "log", "-1", "--pretty=%B")
 	if err != nil {
 		return "", errors.Trace(err)
 	}
 	return msg, nil
 }
 
-func BranchExists(name string) (bool, error) {
-	if err := run.Git("show-ref", "--verify", "--quiet", "refs/heads/"+name); err != nil {
+func BranchExists(ctx context.Context, name string) (bool, error) {
+	if err := run.Git(ctx, "show-ref", "--verify", "--quiet", "refs/heads/"+name); err != nil {
 		var exit *exec.ExitError
 		if errors.As(err, &exit) {
 			if exit.ProcessState.ExitCode() == 1 {
@@ -114,7 +114,7 @@ func BranchExists(name string) (bool, error) {
 }
 
 func LocalBranches(ctx context.Context) ([]string, error) {
-	branches, err := run.GitCaptureOutputContext(ctx, "branch", "--format=%(refname:short)")
+	branches, err := run.GitCaptureOutput(ctx, "branch", "--format=%(refname:short)")
 	if err != nil {
 		return nil, errors.Trace(err)
 	}
@@ -122,7 +122,7 @@ func LocalBranches(ctx context.Context) ([]string, error) {
 }
 
 func RemoteBranches(ctx context.Context) ([]string, error) {
-	branches, err := run.GitCaptureOutputContext(ctx, "branch", "-r", "--format=%(refname:short)")
+	branches, err := run.GitCaptureOutput(ctx, "branch", "-r", "--format=%(refname:short)")
 	if err != nil {
 		return nil, errors.Trace(err)
 	}

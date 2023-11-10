@@ -18,7 +18,7 @@ var cmdPRClean = &cobra.Command{
 	Short:   "Clean all local branches that have no equivalent in the remote.",
 	Example: "ci prclean",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		gerrit, err := query.IsGerrit()
+		gerrit, err := query.IsGerrit(cmd.Context())
 		if err != nil {
 			return errors.Trace(err)
 		}
@@ -26,14 +26,14 @@ var cmdPRClean = &cobra.Command{
 			return errors.Errorf("Gerrit does not use PRs")
 		}
 
-		if err := run.GitContext(cmd.Context(), "fetch"); err != nil {
+		if err := run.Git(cmd.Context(), "fetch"); err != nil {
 			return errors.Trace(err)
 		}
-		if err := run.GitContext(cmd.Context(), "remote", "prune", "origin"); err != nil {
+		if err := run.Git(cmd.Context(), "remote", "prune", "origin"); err != nil {
 			return errors.Trace(err)
 		}
 
-		current, err := query.CurrentBranch()
+		current, err := query.CurrentBranch(cmd.Context())
 		if err != nil {
 			return errors.Trace(err)
 		}
@@ -56,16 +56,16 @@ var cmdPRClean = &cobra.Command{
 			clean++
 			if branch == current {
 				log.Info("Changing branch to the main one to clean the old branch")
-				main, err := query.MainBranch()
+				main, err := query.MainBranch(cmd.Context())
 				if err != nil {
 					return errors.Trace(err)
 				}
-				if err := run.GitContext(cmd.Context(), "checkout", main); err != nil {
+				if err := run.Git(cmd.Context(), "checkout", main); err != nil {
 					return errors.Trace(err)
 				}
 			}
 
-			if err := run.GitContext(cmd.Context(), "branch", "-D", branch); err != nil {
+			if err := run.Git(cmd.Context(), "branch", "-D", branch); err != nil {
 				return errors.Trace(err)
 			}
 		}

@@ -36,11 +36,11 @@ func ListBranches(ctx context.Context) ([]string, error) {
 		return nil, errors.Trace(err)
 	}
 
-	org, err := query.CurrentOrg()
+	org, err := query.CurrentOrg(ctx)
 	if err != nil {
 		return nil, errors.Trace(err)
 	}
-	repo, err := query.CurrentRepo()
+	repo, err := query.CurrentRepo(ctx)
 	if err != nil {
 		return nil, errors.Trace(err)
 	}
@@ -61,19 +61,19 @@ func Create(ctx context.Context, title, body string) (string, error) {
 		return "", errors.Trace(err)
 	}
 
-	org, err := query.CurrentOrg()
+	org, err := query.CurrentOrg(ctx)
 	if err != nil {
 		return "", errors.Trace(err)
 	}
-	repo, err := query.CurrentRepo()
+	repo, err := query.CurrentRepo(ctx)
 	if err != nil {
 		return "", errors.Trace(err)
 	}
-	branch, err := query.CurrentBranch()
+	branch, err := query.CurrentBranch(ctx)
 	if err != nil {
 		return "", errors.Trace(err)
 	}
-	base, err := query.MainBranch()
+	base, err := query.MainBranch(ctx)
 	if err != nil {
 		return "", errors.Trace(err)
 	}
@@ -97,11 +97,11 @@ func Branch(ctx context.Context, id int64) (string, error) {
 		return "", errors.Trace(err)
 	}
 
-	org, err := query.CurrentOrg()
+	org, err := query.CurrentOrg(ctx)
 	if err != nil {
 		return "", errors.Trace(err)
 	}
-	repo, err := query.CurrentRepo()
+	repo, err := query.CurrentRepo(ctx)
 	if err != nil {
 		return "", errors.Trace(err)
 	}

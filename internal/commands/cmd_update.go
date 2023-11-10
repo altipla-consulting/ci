@@ -21,16 +21,16 @@ var cmdUpdate = &cobra.Command{
 	Use:   "update",
 	Short: "Actualiza a la última versión de master borrando todo lo que haya en local",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if err := run.GitContext(cmd.Context(), "fetch", "origin"); err != nil {
+		if err := run.Git(cmd.Context(), "fetch", "origin"); err != nil {
 			return errors.Trace(err)
 		}
 
-		mainBranch, err := query.MainBranch()
+		mainBranch, err := query.MainBranch(cmd.Context())
 		if err != nil {
 			return errors.Trace(err)
 		}
 
-		status, err := run.GitCaptureOutputContext(cmd.Context(), "status", "-s")
+		status, err := run.GitCaptureOutput(cmd.Context(), "status", "-s")
 		if err != nil {
 			return errors.Trace(err)
 		}
@@ -44,26 +44,26 @@ var cmdUpdate = &cobra.Command{
 			}
 		}
 
-		if err := run.GitContext(cmd.Context(), "checkout", "--", "."); err != nil {
+		if err := run.Git(cmd.Context(), "checkout", "--", "."); err != nil {
 			return errors.Trace(err)
 		}
-		if err := run.GitContext(cmd.Context(), "checkout", mainBranch); err != nil {
+		if err := run.Git(cmd.Context(), "checkout", mainBranch); err != nil {
 			return errors.Trace(err)
 		}
-		if err := run.GitContext(cmd.Context(), "reset", "--hard", "origin/"+mainBranch); err != nil {
+		if err := run.Git(cmd.Context(), "reset", "--hard", "origin/"+mainBranch); err != nil {
 			return errors.Trace(err)
 		}
 
 		// Remove any untracked file remaining in the working directory
-		status, err = run.GitCaptureOutputContext(cmd.Context(), "status", "-s")
+		status, err = run.GitCaptureOutput(cmd.Context(), "status", "-s")
 		if err != nil {
 			return errors.Trace(err)
 		}
 		if len(status) > 0 {
-			if err := run.GitContext(cmd.Context(), "stash", "-q", "--include-untracked"); err != nil {
+			if err := run.Git(cmd.Context(), "stash", "-q", "--include-untracked"); err != nil {
 				return errors.Trace(err)
 			}
-			if err := run.GitContext(cmd.Context(), "stash", "drop", "-q"); err != nil {
+			if err := run.Git(cmd.Context(), "stash", "drop", "-q"); err != nil {
 				return errors.Trace(err)
 			}
 		}
