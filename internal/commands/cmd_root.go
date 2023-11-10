@@ -13,9 +13,10 @@ func init() {
 	CmdRoot.AddCommand(cmdCheckout)
 	CmdRoot.AddCommand(cmdCheckoutShort)
 	CmdRoot.AddCommand(cmdLogin)
+	CmdRoot.AddCommand(cmdPR)
+	CmdRoot.AddCommand(cmdPRClean)
 	CmdRoot.AddCommand(cmdPush)
 	CmdRoot.AddCommand(cmdUpdate)
-	CmdRoot.AddCommand(cmdPR)
 }
 
 var CmdRoot = &cobra.Command{

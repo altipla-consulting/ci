@@ -1,8 +1,10 @@
 package query
 
 import (
+	"context"
 	"net/url"
 	"os/exec"
+	"path"
 	"regexp"
 	"strings"
 
@@ -109,4 +111,24 @@ func BranchExists(name string) (bool, error) {
 		return false, errors.Trace(err)
 	}
 	return true, nil
+}
+
+func LocalBranches(ctx context.Context) ([]string, error) {
+	branches, err := run.GitCaptureOutputContext(ctx, "branch", "--format=%(refname:short)")
+	if err != nil {
+		return nil, errors.Trace(err)
+	}
+	return strings.Split(strings.TrimSpace(branches), "\n"), nil
+}
+
+func RemoteBranches(ctx context.Context) ([]string, error) {
+	branches, err := run.GitCaptureOutputContext(ctx, "branch", "-r", "--format=%(refname:short)")
+	if err != nil {
+		return nil, errors.Trace(err)
+	}
+	names := strings.Split(strings.TrimSpace(branches), "\n")
+	for i, name := range names {
+		names[i] = path.Base(name)
+	}
+	return names, nil
 }

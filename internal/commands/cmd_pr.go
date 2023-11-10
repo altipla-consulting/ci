@@ -29,7 +29,7 @@ func init() {
 
 var cmdPR = &cobra.Command{
 	Use:     "pr",
-	Short:   "Envía los commits a GitHub a través de un PR.",
+	Short:   "Create a new branch and send a PR to the main branch.",
 	Example: "ci pr",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := context.Background()

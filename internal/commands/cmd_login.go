@@ -11,7 +11,7 @@ import (
 
 var cmdLogin = &cobra.Command{
 	Use:     "login",
-	Short:   "Inicia sesión global en GitHub para todas las operaciones relacionadas con ese tipo de repos",
+	Short:   "Login to GitHub for all operations related to that type of repos.",
 	Example: "ci login",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := context.Background()
