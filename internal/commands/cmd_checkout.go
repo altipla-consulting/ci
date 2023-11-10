@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"context"
 	"fmt"
 	"strconv"
 
@@ -19,14 +18,12 @@ var cmdCheckout = &cobra.Command{
 	Example: "ci checkout 123",
 	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		ctx := context.Background()
-
 		id, err := strconv.ParseInt(args[0], 10, 64)
 		if err != nil {
 			return errors.Errorf("Especifica como primer argumento el ID del PR que quieres descargar: %v: %v", args[0], err)
 		}
 
-		branch, err := pr.Branch(ctx, id)
+		branch, err := pr.Branch(cmd.Context(), id)
 		if err != nil {
 			return errors.Trace(err)
 		}
@@ -36,15 +33,15 @@ var cmdCheckout = &cobra.Command{
 			return errors.Trace(err)
 		}
 		if exists {
-			if err := run.Git("branch", "-D", branch); err != nil {
+			if err := run.GitContext(cmd.Context(), "branch", "-D", branch); err != nil {
 				return errors.Trace(err)
 			}
 		}
-		if err := run.Git("fetch", "origin", fmt.Sprintf("pull/%d/head:%s", id, branch)); err != nil {
+		if err := run.GitContext(cmd.Context(), "fetch", "origin", fmt.Sprintf("pull/%d/head:%s", id, branch)); err != nil {
 			return errors.Trace(err)
 		}
 
-		if err := run.Git("checkout", branch); err != nil {
+		if err := run.GitContext(cmd.Context(), "checkout", branch); err != nil {
 			return errors.Trace(err)
 		}
 

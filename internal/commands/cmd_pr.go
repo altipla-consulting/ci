@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"context"
 	"fmt"
 	"strings"
 	"time"
@@ -32,8 +31,6 @@ var cmdPR = &cobra.Command{
 	Short:   "Create a new branch and send a PR to the main branch.",
 	Example: "ci pr",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		ctx := context.Background()
-
 		gerrit, err := query.IsGerrit()
 		if err != nil {
 			return errors.Trace(err)
@@ -51,7 +48,7 @@ var cmdPR = &cobra.Command{
 			return errors.Trace(err)
 		}
 		if branch != mainBranch {
-			branches, err := pr.ListBranches(ctx)
+			branches, err := pr.ListBranches(cmd.Context())
 			if err != nil {
 				return errors.Trace(err)
 			}
@@ -92,7 +89,7 @@ var cmdPR = &cobra.Command{
 		if len(parts) > 1 {
 			body = parts[1]
 		}
-		link, err := pr.Create(ctx, parts[0], body)
+		link, err := pr.Create(cmd.Context(), parts[0], body)
 		if err != nil {
 			return errors.Trace(err)
 		}

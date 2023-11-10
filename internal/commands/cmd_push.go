@@ -23,12 +23,12 @@ var cmdPush = &cobra.Command{
 		}
 
 		if gerrit {
-			if err := run.Git("push", "origin", "HEAD:refs/for/"+mainBranch); err != nil {
+			if err := run.GitContext(cmd.Context(), "push", "origin", "HEAD:refs/for/"+mainBranch); err != nil {
 				return errors.Trace(err)
 			}
 			return nil
 		}
 
-		return errors.Trace(run.Git("push"))
+		return errors.Trace(run.GitContext(cmd.Context(), "push"))
 	},
 }
