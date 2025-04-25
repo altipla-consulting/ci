@@ -21,7 +21,7 @@ var cmdUpdate = &cobra.Command{
 	Use:   "update",
 	Short: "Actualiza a la última versión de master borrando todo lo que haya en local",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if err := run.Git(cmd.Context(), "fetch", "origin"); err != nil {
+		if err := run.Git(cmd.Context(), "fetch", "origin", "--tags"); err != nil {
 			return errors.Trace(err)
 		}
 
